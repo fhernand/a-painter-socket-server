@@ -63,6 +63,16 @@ io.on('connect', function(socket){
     roomlog[socket.joinedRoom][rl_index] = event;
   });
 
+  socket.on('endStroke', function(event){
+    if(!socket.joinedRoom) return;
+    event.stroke.owner = socket.owner;
+    socket.broadcast.to(socket.joinedRoom).emit('endStroke', event);
+    let rl_index = event.stroke.owner + "-" + event.stroke.timestamp;
+    event.points = [];
+    roomlog[socket.joinedRoom][rl_index] = event;
+  });
+  
+
   socket.on('removeStroke', function(event){
     if(!socket.joinedRoom) return;
     event.stroke.owner = socket.owner;
