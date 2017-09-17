@@ -33,13 +33,19 @@ AFRAME.registerSystem('multiplayer', {
         self.onRemoveStroke( {stroke: {timestamp: stroke.data.timestamp}});
       });
     });
+    
+    document.addEventListener('stroke-ended', event => {
+      var stroke = event.detail.stroke;
+      stroke.data.numPointsSent = 0;
+      self.onEndStroke( {stroke: {brush: stroke.brush.prototype.brushName, color: stroke.data.color.toArray(), size: stroke.data.size, timestamp: stroke.data.timestamp}});
+    });    
 
     document.querySelector('a-scene').addEventListener('enter-vr', event => {
-      this.isTrackingMovement = true;
+      //this.isTrackingMovement = true;
     });
 
     document.querySelector('a-scene').addEventListener('exit-vr', event => {
-      this.isTrackingMovement = false;
+      //this.isTrackingMovement = false;
       this.onUserLeave();
     });
 
@@ -48,14 +54,15 @@ AFRAME.registerSystem('multiplayer', {
     this.onNewPoints = function(event){};
     this.onUserMove = function(event){};
     this.onUserLeave = function(){};
+    this.onEndStroke = function(){};
 
   },
 
   removeStoke: function(event) {
-  var {stroke, index} = this.findStroke(event.stroke.owner || 'remote', event.stroke.timestamp);
-    if(index === -1) return;
-    stroke.entity.parentNode.removeChild(stroke.entity);
-    this.brush.strokes.splice(index, 1);
+  //var {stroke, index} = this.findStroke(event.stroke.owner || 'remote', event.stroke.timestamp);
+    //if(index === -1) return;
+    //stroke.entity.parentNode.removeChild(stroke.entity);
+    //this.brush.strokes.splice(index, 1);
   },
 
   newStoke: function(event) {
@@ -231,6 +238,11 @@ AFRAME.registerComponent('multiplayer', {
         this.strokeBuffer.push(event);
       });
 
+      this.socket.on('endStroke', event => {
+        if(event.stroke.owner === self.socket.owner) return;
+        this.strokeBuffer.push(event);
+      });
+      
       this.socket.on('newPoints', event => {
         if(!event[0] || event[0].stroke.owner === self.socket.owner) return;
         this.strokeBuffer.push(event);
