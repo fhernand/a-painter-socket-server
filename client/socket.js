@@ -54,7 +54,7 @@ AFRAME.registerSystem('multiplayer', {
     this.onNewPoints = function(event){};
     this.onUserMove = function(event){};
     this.onUserLeave = function(){};
-    this.onEndStroke = function(){};
+    this.onEndStroke = function(event){};
 
   },
 
@@ -68,6 +68,10 @@ AFRAME.registerSystem('multiplayer', {
   newStoke: function(event) {
     var color = new THREE.Color(event.stroke.color[0], event.stroke.color[1], event.stroke.color[2]);
     this.brush.addNewStroke(event.stroke.brush, color, event.stroke.size, event.stroke.owner || 'remote', event.stroke.timestamp);
+  },
+  
+  endStroke: function(event) {
+	  console.log("endStroke event");
   },
 
   newPoints: function(event) {
@@ -240,7 +244,7 @@ AFRAME.registerComponent('multiplayer', {
 
       this.socket.on('endStroke', event => {
         if(event.stroke.owner === self.socket.owner) return;
-        this.strokeBuffer.push(event);
+        this.system.endStroke(event);
       });
       
       this.socket.on('newPoints', event => {
@@ -259,6 +263,7 @@ AFRAME.registerComponent('multiplayer', {
       });
 
       this.system.onNewStroke = event => this.socket.emit('newStroke', event);
+      this.system.onEndStroke = event => this.socket.emit('endStroke', event);
       this.system.onRemoveStroke = event => this.socket.emit('removeStroke', event);
       this.system.onNewPoints = event => this.socket.emit('newPoints', event);
       this.system.onUserMove = event => this.socket.emit('userMove', event);
@@ -272,7 +277,7 @@ AFRAME.registerComponent('multiplayer', {
       let len = Math.min(Number(this.strokeBuffer.length), 20);
       for(let i = 0; i < len; i++){ //don't do more than 20
         let event = this.strokeBuffer.shift();
-        if(Array.isArray(event)) this.system.newPoints(event);
+        if(Array.isArray(event)) this.system.newPoints(event);	
         else this.system.newStoke(event);
       }
     }
