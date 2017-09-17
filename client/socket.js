@@ -34,10 +34,8 @@ AFRAME.registerSystem('multiplayer', {
       });
     });
     
-    document.addEventListener('stroke-ended', event => {
-      var stroke = event.detail.stroke;
-      stroke.data.numPointsSent = 0;
-      self.onEndStroke( {stroke: {brush: stroke.brush.prototype.brushName, color: stroke.data.color.toArray(), size: stroke.data.size, timestamp: stroke.data.timestamp}});
+    document.addEventListener('stroke-ended', function() {
+      self.onEndStroke();
     });    
 
     document.querySelector('a-scene').addEventListener('enter-vr', event => {
@@ -54,7 +52,7 @@ AFRAME.registerSystem('multiplayer', {
     this.onNewPoints = function(event){};
     this.onUserMove = function(event){};
     this.onUserLeave = function(){};
-    this.onEndStroke = function(event){};
+    this.onEndStroke = function(){};
 
   },
 
@@ -70,7 +68,7 @@ AFRAME.registerSystem('multiplayer', {
     this.brush.addNewStroke(event.stroke.brush, color, event.stroke.size, event.stroke.owner || 'remote', event.stroke.timestamp);
   },
   
-  endStroke: function(event) {
+  endStroke: function() {
 	  console.log("endStroke event");
   },
 
@@ -242,9 +240,8 @@ AFRAME.registerComponent('multiplayer', {
         this.strokeBuffer.push(event);
       });
 
-      this.socket.on('endStroke', event => {
-        if(event.stroke.owner === self.socket.owner) return;
-        this.system.endStroke(event);
+      this.socket.on('endStroke', () => {
+        this.system.endStroke();
       });
       
       this.socket.on('newPoints', event => {
@@ -263,7 +260,7 @@ AFRAME.registerComponent('multiplayer', {
       });
 
       this.system.onNewStroke = event => this.socket.emit('newStroke', event);
-      this.system.onEndStroke = event => this.socket.emit('endStroke', event);
+      this.system.onEndStroke = () => this.socket.emit('endStroke');
       this.system.onRemoveStroke = event => this.socket.emit('removeStroke', event);
       this.system.onNewPoints = event => this.socket.emit('newPoints', event);
       this.system.onUserMove = event => this.socket.emit('userMove', event);
