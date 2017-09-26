@@ -38,6 +38,10 @@ AFRAME.registerSystem('multiplayer', {
       self.onEndStroke();
     });    
 
+    document.addEventListener('ledsize-changed', event => {
+      self.onNewLEDSize( {ledsize: event.detail.ledsize} );
+    });
+	  
     document.querySelector('a-scene').addEventListener('enter-vr', event => {
       //this.isTrackingMovement = true;
     });
@@ -48,6 +52,7 @@ AFRAME.registerSystem('multiplayer', {
     });
 
     this.onNewStroke = function(event){};
+    this.onNewLEDSize = function(event){};  
     this.onRemoveStroke = function(event){};
     this.onNewPoints = function(event){};
     this.onUserMove = function(event){};
@@ -239,6 +244,11 @@ AFRAME.registerComponent('multiplayer', {
         if(event.stroke.owner === self.socket.owner) return;
         this.strokeBuffer.push(event);
       });
+	    
+      this.socket.on('newLEDSize', event => {
+        if(event.owner === self.socket.owner) return;
+        this.system.newLEDSize();
+      });   
 
       this.socket.on('endStroke', () => {
         this.system.endStroke();
@@ -260,6 +270,7 @@ AFRAME.registerComponent('multiplayer', {
       });
 
       this.system.onNewStroke = event => this.socket.emit('newStroke', event);
+      this.system.onNewLEDSize = event => this.socket.emit('newLEDSize', event);    
       this.system.onEndStroke = () => this.socket.emit('endStroke');
       this.system.onRemoveStroke = event => this.socket.emit('removeStroke', event);
       this.system.onNewPoints = event => this.socket.emit('newPoints', event);
