@@ -246,7 +246,6 @@ AFRAME.registerComponent('multiplayer', {
       });
 	    
       this.socket.on('newLEDSize', event => {
-        if(event.owner === self.socket.owner) return;
         this.system.newLEDSize();
       });   
 
