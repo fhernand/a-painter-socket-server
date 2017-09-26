@@ -65,14 +65,12 @@ io.on('connect', function(socket){
 
   socket.on('newLEDSize', function(event){
     if(!socket.joinedRoom) return;
-    event.owner = socket.owner;
     socket.broadcast.to(socket.joinedRoom).emit('newLEDSize', event);
   });
 	
-  socket.on('endStroke', function(event){
+  socket.on('endStroke', function(){
     if(!socket.joinedRoom) return;
-    event.owner = socket.owner;  
-    socket.broadcast.to(socket.joinedRoom).emit('endStroke', event);
+    socket.broadcast.to(socket.joinedRoom).emit('endStroke');
   });
   
 
