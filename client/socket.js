@@ -72,10 +72,6 @@ AFRAME.registerSystem('multiplayer', {
     var color = new THREE.Color(event.stroke.color[0], event.stroke.color[1], event.stroke.color[2]);
     this.brush.addNewStroke(event.stroke.brush, color, event.stroke.size, event.stroke.owner || 'remote', event.stroke.timestamp);
   },
-  
-  endStroke: function() {
-	  console.log("endStroke event");
-  },
 
   newPoints: function(event) {
     for(let i = 0; i < event.length; i++){
@@ -243,14 +239,6 @@ AFRAME.registerComponent('multiplayer', {
       this.socket.on('newStroke', event => {
         if(event.stroke.owner === self.socket.owner) return;
         this.strokeBuffer.push(event);
-      });
-	    
-      this.socket.on('newLEDSize', event => {
-        this.system.newLEDSize();
-      });   
-
-      this.socket.on('endStroke', () => {
-        this.system.endStroke();
       });
       
       this.socket.on('newPoints', event => {
