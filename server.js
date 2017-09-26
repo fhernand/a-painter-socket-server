@@ -63,6 +63,11 @@ io.on('connect', function(socket){
     roomlog[socket.joinedRoom][rl_index] = event;
   });
 
+  socket.on('newLEDSize', function(event){
+    if(!socket.joinedRoom) return;
+    socket.broadcast.to(socket.joinedRoom).emit('newLEDSize', event);
+  });
+	
   socket.on('endStroke', function(){
     if(!socket.joinedRoom) return;
     socket.broadcast.to(socket.joinedRoom).emit('endStroke');
