@@ -42,6 +42,16 @@ app.get('/', function(req, res){
   });
 });
 
+app.get('/svg', function(req, res){
+  fs.readFile('client/browserclient.html', (err, data) => {
+    if (err) throw err;
+    res.send(data +
+      '<script src="client/svg.js"></script>' + 
+	  '<script src="client/browserclient.js"></script>'
+    );
+  });
+});
+
 io.on('connect', function(socket){
   socket.owner = token();
   while(clients.indexOf(socket.owner) !== -1) socket.owner = token();

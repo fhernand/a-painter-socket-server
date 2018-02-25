@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+ 
+  <script src="client/svg.js">
+</script>
+
+
+  <style>
+  .fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background: lime; /* Just to visualize the extent */
+  }
+  </style>
+</head>
+<body bgcolor="#000000">
+  <div class="fullscreen" id="drawing"></div>
+<script>
+SVG.on(document, 'DOMContentLoaded', function() {
+
+  //rect.center('50%','50%')
+})
+
+
+</script>
+  <script src="client/browserclient.js"></script>
+
+</body>
+</html>
