@@ -29,9 +29,9 @@ AFRAME.registerSystem('multiplayer', {
       var stroke = event.detail.stroke;
       stroke.data.numPointsSent = 0;
       self.onNewStroke( {stroke: {brush: stroke.brush.prototype.brushName, color: stroke.data.color.toArray(), size: stroke.data.size, timestamp: stroke.data.timestamp}});
-      stroke.entity.addEventListener('stroke-removed', r_event => {
-        self.onRemoveStroke( {stroke: {timestamp: stroke.data.timestamp}});
-      });
+      //stroke.entity.addEventListener('stroke-removed', r_event => {
+      //  self.onRemoveStroke( {stroke: {timestamp: stroke.data.timestamp}});
+      //});
     });
     
     document.addEventListener('stroke-ended', function() {
