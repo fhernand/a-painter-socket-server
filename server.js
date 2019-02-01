@@ -77,6 +77,11 @@ io.on('connect', function(socket){
     if(!socket.joinedRoom) return;
     socket.broadcast.to(socket.joinedRoom).emit('newLEDSize', event);
   });
+  
+  socket.on('newBrightness', function(event){
+    if(!socket.joinedRoom) return;
+    socket.broadcast.to(socket.joinedRoom).emit('newBrightness', event);
+  });  
 	
   socket.on('endStroke', function(){
     if(!socket.joinedRoom) return;
